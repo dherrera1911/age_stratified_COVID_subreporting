@@ -96,7 +96,7 @@ age_stratified_bayesian_model <- function (casesKnownStrat,
   # construct the model
   m <- greta::model(reporting_rate)
   
-  n_chains <- 10
+  n_chains <- 100
   
   # sample initial values for hyperparameters from within their priors
   inits <- replicate(
