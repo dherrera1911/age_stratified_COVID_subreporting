@@ -51,9 +51,8 @@ predictionDeath <- age_stratified_bayesian_model(casesKnownStrat,
                                                     interceptMean=interceptCrit,
                                                     interceptCI=interceptCritCI)
 
-write.csv(predictionDeath, "./estimate_subreporting_death_stratified.csv",
+write.csv(predictionDeath, "../results/estimate_subreporting_death_stratified.csv",
           row.names=FALSE)
-
 
 
 # Fit to critical cases
@@ -80,8 +79,9 @@ predictionCritical <- age_stratified_bayesian_model(casesKnownStrat,
                                                     interceptMean=interceptCrit,
                                                     interceptCI=interceptCritCI)
 
-write.csv(predictionCritical, "./estimate_subreporting_crit_stratified.csv",
+write.csv(predictionCritical, "../results/3_estimate_subreporting_crit_stratified.csv",
           row.names=FALSE)
+
 
 # Fit to severe cases
 delay_fun_hosp <- onset2Outcome(onset2Hospquartiles)
@@ -104,6 +104,6 @@ predictionSevere <- age_stratified_bayesian_model(casesKnownStrat,
                                                     interceptMean=interceptSevere,
                                                     interceptCI=interceptSevereCI)
 
-write.csv(predictionSevere, "./8_estimate_subreporting_severe_stratified.csv",
+write.csv(predictionSevere, "../results/3_estimate_subreporting_severe_stratified.csv",
           row.names=FALSE)
 

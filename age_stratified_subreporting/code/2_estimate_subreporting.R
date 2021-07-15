@@ -58,6 +58,7 @@ predictionSevere <- run_bayesian_model(fittingData_severe,
                                  percentageOutcome=severeMean,
                                  percentageOutcomeRange=severeIC)
 
-saveRDS(predictionCritical, "../datos_procesados/4_subreportingEstimate_critical.RDS")
-saveRDS(predictionSevere, "../datos_procesados/4_subreportingEstimate_severe.RDS")
+saveRDS(predictionDeaths, "../results/2_subreportingEstimate_deaths.RDS")
+saveRDS(predictionCritical, "../results/2_subreportingEstimate_critical.RDS")
+saveRDS(predictionSevere, "../results/2_subreportingEstimate_severe.RDS")
 
