@@ -101,9 +101,11 @@ write.csv(predictionCritical, "../results/3_estimate_subreporting_crit_stratifie
 # Fit to severe cases
 #################
 delay_fun_hosp <- onset2Outcome(onset2Hospquartiles)
-casesKnownStrat <- get_fitting_data_strat(outcomeDf, delay_fun_hosp)
-casesKnownStrat$date_num <- as.numeric(outcomeDf$day)
-casesKnownStrat$date <- outcomeDf$day
+casesKnownStrat <- dplyr::select(outcomeDf, all_of(ageBins)) %>%
+  get_fitting_data_strat(., delay_fun_hosp)
+casesKnownStrat$date_num <- as.numeric(outcomeDf$date)
+casesKnownStrat$date_num <- with(casesKnownStrat, date_num-min(date_num)+1)
+casesKnownStrat$date <- outcomeDf$date
 
 severeParams <- dplyr::filter(modelParams, Fit=="Severe")
 slopeSevere <- severeParams$Slope

@@ -3,6 +3,7 @@ library(tidyr)
 library(lubridate)
 library(rriskDistributions)
 library(stringr)
+library(readr)
 
 
 # receive minimum and maximum dates and return vector with all dates
