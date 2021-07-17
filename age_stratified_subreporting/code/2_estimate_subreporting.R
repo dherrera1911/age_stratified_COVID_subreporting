@@ -10,11 +10,19 @@ source("./functions_auxiliary.R")
 source("./functions_analysis_subreporting.R")
 source("./bayesian_subreporting_fitting.R")
 
+minDate <- "2020-10-01" 
+maxDate <- "2021-01-15" 
+
 outcomeDf <- read.csv("../data/public_uruguay_data/dynamics_uruguay.csv",
                       stringsAsFactors=FALSE) %>%
   as_tibble(.) %>%
   dplyr::mutate(., newCases=casesTot, date=lubridate::date(date)) %>%
-  dplyr::select(., date, newCases, critical, severe, deaths)
+  dplyr::select(., date, newCases, critical, severe, deaths) %>%
+  dplyr::filter(., (date>=minDate) & (date<=maxDate))
+
+# remove first 10 days of deaths, which are from patients from
+# previous of this period
+outcomeDf$deaths[c(1:10)] <- 0
 
 # parameters for fitting
 deathMean <- 0.68
@@ -34,6 +42,7 @@ deathDf <- dplyr::mutate(outcomeDf, newOutcome=deaths)
 
 fittingData_death <- get_fitting_data(deathDf, delay_fun_death,
                                 baselineOutcomeProp=deathMean)
+
 predictionDeaths <- run_bayesian_model(fittingData_death,
                                  percentageOutcome=deathMean,
                                  percentageOutcomeRange=deathIC)
