@@ -200,7 +200,7 @@ expected_proportion_in_time <- function(individualCaseDf, proportionOutcomeDf,
 
 get_fitting_data <- function(outcomeDf, delay_fun, baselineOutcomeProp) {
   outcome_threshold_date <- outcomeDf %>% 
-    dplyr::mutate(., outcome_cum_sum = cumsum(newOutcome)) %>% 
+    dplyr::mutate(., outcome_cum_sum=cumsum(newOutcome)) %>% 
 #    dplyr::filter(., outcome_cum_sum >= 10) %>% 
     dplyr::pull(date) %>% 
     min()

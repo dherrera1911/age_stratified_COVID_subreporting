@@ -121,3 +121,44 @@ get_bins_limits <- function(ageBins) {
   return(list(lower=ageLow, upper=ageHigh))
 }
 
+
+caseDetails_2_dynamics <- function(casesDf, ageBins, minDate="2020-03-28",
+                                   maxDate="2021-01-15") {
+  casesDf <- dplyr::filter(casesDf, (dateSymptoms>=minDate) &
+                           (dateSymptoms<=maxDate))
+  dynamicsDates <- date_sequence(minDate=minDate, maxDate=maxDate)
+
+  severeDynamics <- events_by_day(casesDf$dateSevere,
+                minDate=minDate, maxDate=maxDate)
+  criticalDynamics <- events_by_day(casesDf$dateCritical,
+                minDate=minDate, maxDate=maxDate)
+
+  # get death dynamics form GUIAD web page
+  urlfile <- "https://raw.githubusercontent.com/GUIAD-COVID/datos-y-visualizaciones-GUIAD/master/datos/estadisticasUY.csv"
+  guiadData <- read_csv(url(urlfile)) %>%
+    dplyr::mutate(., date=lubridate::dmy(fecha)) %>%
+    dplyr::filter(., (date>=minDate & date <=maxDate))
+  deathDynamics <- guiadData$cantFallecidos
+
+  binInds <- bin_ages(casesDf$age, ageBins)
+  casesDf$ageStrat <- factor(ageBins[binInds], levels=ageBins)
+  dynamicsDf <- data.frame(date=dynamicsDates)
+  for (strat in ageBins) {
+    stratCases <- dplyr::filter(casesDf, ageStrat==strat)
+    newCasesStrat <- events_by_day(datesVec=stratCases$dateSymptoms,
+                                   minDate=minDate, maxDate=maxDate)
+    dynamicsDf[[strat]] <- newCasesStrat
+  }
+
+  # total cases
+  newCasesTot <- events_by_day(datesVec=casesDf$dateSymptoms,
+                                 minDate=minDate, maxDate=maxDate)
+
+  # put all together into a full dynamics data frame
+  dynamicsDf$critical <- criticalDynamics
+  dynamicsDf$severe <- severeDynamics
+  dynamicsDf$deaths <- deathDynamics
+  dynamicsDf$casesTot <- newCasesTot
+  return(dynamicsDf)
+}
+
