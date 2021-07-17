@@ -57,10 +57,10 @@ casesKnownStrat$date <- dynamicsDf$date
 
 predictionDeath <- age_stratified_bayesian_model(casesKnownStrat,
                                                     outcomeVec=deathVec,
-                                                    slopeMean=slopeCrit,
-                                                    slopeCI=slopeCritCI,
-                                                    interceptMean=interceptCrit,
-                                                    interceptCI=interceptCritCI)
+                                                    slopeMean=slopeDeath,
+                                                    slopeCI=slopeDeathCI,
+                                                    interceptMean=interceptDeath,
+                                                    interceptCI=interceptDeathCI)
 
 write.csv(predictionDeath, "../results/estimate_subreporting_death_stratified.csv",
           row.names=FALSE)
