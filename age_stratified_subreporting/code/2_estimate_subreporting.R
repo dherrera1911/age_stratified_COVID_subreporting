@@ -51,6 +51,8 @@ fittingData_death <- get_fitting_data(deathDf, delay_fun_death,
 predictionDeaths <- run_bayesian_model(fittingData_death,
                                  percentageOutcome=deathMean,
                                  percentageOutcomeRange=deathIC)
+write.csv(predictionDeaths, "../results/2_estimate_subreporting_deaths.csv",
+          row.names=FALSE)
 
 # Fit to critical cases
 delay_fun_crit <- onset2Outcome(onset2ICUquartiles)
@@ -61,6 +63,8 @@ fittingData_crit <- get_fitting_data(criticalDf, delay_fun_crit,
 predictionCritical <- run_bayesian_model(fittingData_crit,
                                  percentageOutcome=criticalMean,
                                  percentageOutcomeRange=criticalIC)
+write.csv(predictionCritical, "../results/2_estimate_subreporting_critical.csv",
+          row.names=FALSE)
 
 # Fit to severe cases
 delay_fun_hosp <- onset2Outcome(onset2Hospquartiles)
@@ -72,7 +76,7 @@ predictionSevere <- run_bayesian_model(fittingData_severe,
                                  percentageOutcome=severeMean,
                                  percentageOutcomeRange=severeIC)
 
-saveRDS(predictionDeaths, "../results/2_subreportingEstimate_deaths.RDS")
-saveRDS(predictionCritical, "../results/2_subreportingEstimate_critical.RDS")
-saveRDS(predictionSevere, "../results/2_subreportingEstimate_severe.RDS")
+write.csv(predictionSevere, "../results/2_estimate_subreporting_severe.csv",
+          row.names=FALSE)
+
 
