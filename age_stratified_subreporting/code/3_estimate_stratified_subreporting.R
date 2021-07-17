@@ -83,7 +83,7 @@ interceptCrit <- criticalParams$Intercept
 slopeCritCI <- with(criticalParams, c(SlopeL, SlopeH))
 interceptCritCI <- with(criticalParams, c(InterceptL, InterceptH))
 
-critVec <- dynamicsDf$newCritical
+critVec <- dynamicsDf$critical
 
 predictionCritical <- age_stratified_bayesian_model(casesKnownStrat,
                                                     outcomeVec=critVec,
@@ -110,7 +110,7 @@ interceptSevere <- severeParams$Intercept
 slopeSevereCI <- with(severeParams, c(SlopeL, SlopeH))
 interceptSevereCI <- with(severeParams, c(InterceptL, InterceptH))
 
-severeVec <- dynamicsDf$newHosp
+severeVec <- dynamicsDf$severe
 
 predictionSevere <- age_stratified_bayesian_model(casesKnownStrat,
                                                     outcomeVec=severeVec,
