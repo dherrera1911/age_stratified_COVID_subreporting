@@ -6,11 +6,11 @@ library(stringr)
 library(readr)
 source("./functions_auxiliary.R")
 
-minDate <- "2020-10-01"
+minDate <- "2020-03-28"
 maxDate <- "2021-01-15"
 
 # load data
-uruData <- read.csv("../public_uruguay_data/case_characteristics_uruguay.csv",
+uruData <- read.csv("../data/public_uruguay_data/case_characteristics_uruguay.csv",
                     stringsAsFactors=FALSE) %>%
   dplyr::filter(., !((Edad=="S.D.") | (Edad=="") | (Inicio.Sínt.=="") |
                      (X.Estuvo.en.otros.países.de.circulación.de.COVID.19.=="S"))) %>%
@@ -74,7 +74,7 @@ processedData <- data.frame(age=ages,
                             dateSevere=uruData$severeDate,
                             dateCritical=uruData$critDate)
 
-write.csv(processedData, "../public_uruguay_data/processedData.csv",
+write.csv(processedData, "../data/public_uruguay_data/processedData.csv",
           row.names=FALSE)
 
 
@@ -98,8 +98,11 @@ guiadData <- read_csv(url(urlfile)) %>%
 deathDynamics <- guiadData$cantFallecidos
 
 # get the case dynamics for each age stratum
-binsVec <- c("0-9", "10-19", "20-29", "30-39", "40-49", "50-59",
-             "60-69", "70-79", "80-89", "90+")
+#binsVec <- c("0-9", "10-19", "20-29", "30-39", "40-49", "50-59",
+#             "60-69", "70-79", "80-89", "90+")
+binsVec <- c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34",
+             "35-39", "40-44", "45-49", "50-54", "55-59", "60-64",
+             "65-69", "70-74", "75-79", "80-84", "85-89", "90+")
 
 binInds <- bin_ages(processedData$age, binsVec)
 processedData$ageStrat <- factor(binsVec[binInds], levels=binsVec)
@@ -122,6 +125,6 @@ dynamicsDf$deaths <- deathDynamics
 dynamicsDf$casesTot <- newCasesTot
 
 # save dynamics dataframe
-write.csv(dynamicsDf, "../public_uruguay_data/dynamics_uruguay.csv",
+write.csv(dynamicsDf, "../data/public_uruguay_data/dynamics_uruguay_finer.csv",
           row.names=FALSE)
 
