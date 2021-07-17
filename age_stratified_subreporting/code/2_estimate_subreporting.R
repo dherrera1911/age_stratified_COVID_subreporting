@@ -10,7 +10,7 @@ source("./functions_auxiliary.R")
 source("./functions_analysis_subreporting.R")
 source("./bayesian_subreporting_fitting.R")
 
-outcomeDf <- read.csv("../public_uruguay_data/dynamics_uruguay.csv",
+outcomeDf <- read.csv("../data/public_uruguay_data/dynamics_uruguay.csv",
                       stringsAsFactors=FALSE) %>%
   as_tibble(.) %>%
   dplyr::mutate(., newCases=casesTot, date=lubridate::date(date)) %>%
