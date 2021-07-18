@@ -38,8 +38,8 @@ severeMean <- 3.3
 severeIC <- c(2.6, 4.3)
 
 onset2Deathquartiles <- c(8, 18, 24) # datos para ajustar curva de delay
-onset2ICUquartiles <- c(4, 7, 10) # datos para ajustar curva de delay
-onset2Hospquartiles <- c(3, 5, 9) # datos para ajustar curva de delay
+onset2ICUquartiles <- c(5, 9, 11) # datos para ajustar curva de delay
+onset2Hospquartiles <- c(2, 4, 8) # datos para ajustar curva de delay
 
 # Fit to deaths
 delay_fun_death <- onset2Outcome(onset2Deathquartiles)

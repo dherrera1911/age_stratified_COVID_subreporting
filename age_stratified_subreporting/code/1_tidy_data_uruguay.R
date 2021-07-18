@@ -62,6 +62,7 @@ for (nr in c(1:nrow(severeDf))) {
   } else {
     severeDate[nr] <- min(c(date1, date2, date3, date4), na.rm=TRUE)
   }
+  severeDate[nr] <- max(severeDate[nr], severeRow$Inicio.Sínt.)
 }
 uruData$severeDate <- lubridate::date(NA)
 uruData$severeDate[which(severe)] <- severeDate
@@ -70,14 +71,15 @@ criticalDf <- uruData[which(critical),]
 criticalDate <- lubridate::date(NA)
 for (nr in c(1:nrow(criticalDf))) {
   criticalRow <- criticalDf[nr,]
-  date2 <- criticalRow[["Ingreso.a.CTI"]]
-  date3 <- criticalRow[["Ingreso.a.CI"]]
-  date4 <- criticalRow[["Fecha.de.recuperación.en.BD"]]
-  if (is.na(date1) & is.na(date2) & is.na(date3) & is.na(date4)) {
+  date1 <- criticalRow[["Ingreso.a.CTI"]]
+  date2 <- criticalRow[["Ingreso.a.CI"]]
+  date3 <- criticalRow[["Fecha.de.recuperación.en.BD"]]
+  if (is.na(date1) & is.na(date2) & is.na(date3)) {
     criticalDate[nr] <- criticalRow$Inicio.Sínt. + 10
   } else {
-    criticalDate[nr] <- min(c(date1, date2, date3, date4), na.rm=TRUE)
+    criticalDate[nr] <- min(c(date1, date2, date3), na.rm=TRUE)
   }
+  criticalDate[nr] <- max(criticalDate[nr], criticalRow$Inicio.Sínt.)
 }
 uruData$criticalDate <- lubridate::date(NA)
 uruData$criticalDate[which(critical)] <- criticalDate
