@@ -49,21 +49,38 @@ severe <- (uruData$Internación=="S" |
 death <- uruData$Condición.actual.del.caso=="Fallecido"
 
 # find dates that cases turn critical or severe
-uruData <- dplyr::rowwise(uruData) %>%
-  dplyr::mutate(., critDate=min(c(Ingreso.a.CI, Ingreso.a.CTI,
-                                  Fecha.de.recuperación.en.BD), na.rm=TRUE))
-uruData$critDate[which(!critical)] <- NA
+severeDf <- uruData[which(severe),]
+severeDate <- lubridate::date(NA)
+for (nr in c(1:nrow(severeDf))) {
+  severeRow <- severeDf[nr,]
+  date1 <- severeRow[["F..internación"]]
+  date2 <- severeRow[["Ingreso.a.CTI"]]
+  date3 <- severeRow[["Ingreso.a.CI"]]
+  date4 <- severeRow[["Fecha.de.recuperación.en.BD"]]
+  if (is.na(date1) & is.na(date2) & is.na(date3) & is.na(date4)) {
+    severeDate[nr] <- severeRow$Inicio.Sínt. + 7
+  } else {
+    severeDate[nr] <- min(c(date1, date2, date3, date4), na.rm=TRUE)
+  }
+}
+uruData$severeDate <- lubridate::date(NA)
+uruData$severeDate[which(severe)] <- severeDate
 
-uruData <- dplyr::rowwise(uruData) %>%
-  dplyr::mutate(., severeDate=min(c(F..internación, Ingreso.a.CI, Ingreso.a.CTI,
-                                    Fecha.de.recuperación.en.BD), na.rm=TRUE))
-uruData$severeDate[which(!severe)] <- NA
-
-uruData <- dplyr::rowwise(uruData) %>%
-  dplyr::mutate(., deathDate=min(c(F..internación, Ingreso.a.CTI), na.rm=TRUE))
-
-# death dates are not present
-uruData$deathDate[which(!death)] <- NA
+criticalDf <- uruData[which(critical),]
+criticalDate <- lubridate::date(NA)
+for (nr in c(1:nrow(criticalDf))) {
+  criticalRow <- criticalDf[nr,]
+  date2 <- criticalRow[["Ingreso.a.CTI"]]
+  date3 <- criticalRow[["Ingreso.a.CI"]]
+  date4 <- criticalRow[["Fecha.de.recuperación.en.BD"]]
+  if (is.na(date1) & is.na(date2) & is.na(date3) & is.na(date4)) {
+    criticalDate[nr] <- criticalRow$Inicio.Sínt. + 10
+  } else {
+    criticalDate[nr] <- min(c(date1, date2, date3, date4), na.rm=TRUE)
+  }
+}
+uruData$criticalDate <- lubridate::date(NA)
+uruData$criticalDate[which(critical)] <- criticalDate
 
 # make and save tidy data frame for later use
 processedData <- data.frame(age=ages,
@@ -72,7 +89,7 @@ processedData <- data.frame(age=ages,
                             severe=severe,
                             death=death,
                             dateSevere=uruData$severeDate,
-                            dateCritical=uruData$critDate)
+                            dateCritical=uruData$criticalDate)
 
 write.csv(processedData, "../data/public_uruguay_data/processedData.csv",
           row.names=FALSE)

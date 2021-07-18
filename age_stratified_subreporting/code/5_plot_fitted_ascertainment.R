@@ -5,18 +5,20 @@ source("./plotting_functions.R")
 source("./functions_analysis_subreporting.R")
 source("./functions_auxiliary.R")
 
+dateDir <- "11.01_01.30"
+#dateDir <- "10.01_01.15"
 
 ########################################################
 ## Plot unstratified subreporting estimates
 ########################################################
-subreportDeath <- read.csv("../results/2_estimate_subreporting_deaths.csv",
-                           stringsAsFactors=FALSE) %>%
+deathFile <- paste("../results/", dateDir, "/2_estimate_subreporting_deaths.csv", sep="")
+subreportDeath <- read.csv(deathFile, stringsAsFactors=FALSE) %>%
   dplyr::mutate(., date=lubridate::as_date(date))
-subreportCrit <- read.csv("../results/2_estimate_subreporting_critical.csv",
-                           stringsAsFactors=FALSE) %>%
+critFile <- paste("../results/", dateDir, "/2_estimate_subreporting_critical.csv", sep="")
+subreportCrit <- read.csv(critFile, stringsAsFactors=FALSE) %>%
   dplyr::mutate(., date=lubridate::as_date(date))
-subreportSevere <- read.csv("../results/2_estimate_subreporting_severe.csv",
-                           stringsAsFactors=FALSE) %>%
+critFile <- paste("../results/", dateDir, "/2_estimate_subreporting_severe.csv", sep="")
+subreportSevere <- read.csv(critFile, stringsAsFactors=FALSE) %>%
   dplyr::mutate(., date=lubridate::as_date(date))
 
 subreportDeathPlot <- plot_subreporting(subreportDeath, title="Deaths")
