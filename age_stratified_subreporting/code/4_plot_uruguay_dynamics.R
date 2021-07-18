@@ -15,8 +15,6 @@ urlfile <- "https://raw.githubusercontent.com/GUIAD-COVID/datos-y-visualizacione
 guiadData <- read_csv(url(urlfile)) %>%
   dplyr::mutate(., date=lubridate::dmy(fecha))
 
-
-
 #########
 # Plot early deaths
 #########
@@ -103,7 +101,7 @@ plotDeaths <- guiadData %>%
   dplyr::filter(., date <= maxDate & date >= minDate) %>%
   #ggplot(., aes(x=date, y=cantFallecidos)) +
   #geom_point() +
-  ggplot(., aes(x=date, y=acumFallecidos)) +
+  ggplot(., aes(x=date, y=cantFallecidos)) +
   geom_line() +
   theme_bw() +
   theme(strip.background=element_rect(fill="white", color="white"),
@@ -182,15 +180,15 @@ ggsave("../data/ifr_uru_dyn1.png", plotIFR, width=8, height=6, units="cm")
 ################
 # Plot later death and positivity
 ################
-maxDate <- "2021-01-15"
-minDate <- "2020-09-18"
+maxDate <- "2021-01-30"
+minDate <- "2020-11-01"
 
 plotDeaths_late <- guiadData %>%
   dplyr::filter(., date <= maxDate & date >= minDate) %>%
-  #ggplot(., aes(x=date, y=cantFallecidos)) +
-  #geom_point() +
-  ggplot(., aes(x=date, y=acumFallecidos)) +
-  geom_line() +
+  ggplot(., aes(x=date, y=cantFallecidos)) +
+  geom_point() +
+  #ggplot(., aes(x=date, y=acumFallecidos)) +
+  #geom_line() +
   theme_bw() +
   theme(strip.background=element_rect(fill="white", color="white"),
         strip.text=element_text(face="bold"),
@@ -235,6 +233,9 @@ ggsave("../data/positivity_uruguay_late.png", plotPositivity_late,
 ################
 # Plot later IFR for cases, severe and lethal patients
 ################
+# reference IFR date
+refDate <- "2020-12-01"
+
 stratifiedDyn_late <- filter(stratifiedDyn, date<=maxDate & date>=minDate)
 #caseMat <- as.matrix(stratifiedDyn_late[2:11])
 caseMat <- as.matrix(stratifiedDyn_late[2:20])
@@ -311,17 +312,18 @@ ifrDynDf_severe$population <- "Severe cases"
 ifrDynDf_death$population <- "Fatal cases"
 ifrDynDf$population <- "Cases"
 
-refIFR1 <- with(ifrDynDf, ifr[date=="2020-12-01"])
-ifrDynDf$ifrRel <- ifrDynDf$ifr/refIFR1
-refIFR2 <- with(ifrDynDf_severe, ifr[date=="2020-12-01"])
-ifrDynDf_severe$ifrRel <- ifrDynDf_severe$ifr/refIFR2
-refIFR2 <- with(ifrDynDf_death, ifr[date=="2020-12-01"])
-ifrDynDf_death$ifrRel <- ifrDynDf_death$ifr/refIFR2
+refIFR1 <- with(ifrDynDf, ifr[date==refDate])
+ifrDynDf$ifrRel <- (ifrDynDf$ifr-refIFR1)/refIFR1
+refIFR2 <- with(ifrDynDf_severe, ifr[date==refDate])
+ifrDynDf_severe$ifrRel <- (ifrDynDf_severe$ifr-refIFR2)/refIFR2
+refIFR3 <- with(ifrDynDf_death, ifr[date==refDate])
+ifrDynDf_death$ifrRel <- (ifrDynDf_death$ifr-refIFR3)/refIFR3
 
 ifrDynDf_late <- rbind(ifrDynDf, ifrDynDf_severe, ifrDynDf_death)
 
 plotIFR_late <- ifrDynDf_late %>%
-  dplyr::filter(., date>="2020-11-15") %>%
+  dplyr::filter(., date>=refDate) %>%
+  dplyr::filter(., population!="Severe cases") %>%
   ggplot(., aes(x=date, y=ifrRel*100, color=population)) +
   geom_line() +
   theme_bw() +
@@ -336,12 +338,9 @@ plotIFR_late <- ifrDynDf_late %>%
         axis.line.y=element_line(size=0.5, linetype="solid"),
         legend.title=element_blank()) +
   xlab("Date") +
-  ylab("Estimated IFR (%)")
+  ylab("IFR change (%)")
 
 ggsave("../data/ifr_uru_dyn_severe.png", plotIFR_late,
        width=10, height=6, units="cm")
-
-
-
 
 
